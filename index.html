@@ -4,19 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+GB+J+Guides:ital@0;1&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="status">Players turn:</div>
-    <div class="GameBoard">
+<body class="r tangerine-bold">
+    <nav></nav>
+    <div class="turn tangerine-regular"></div>
+
+    <div class="GameBoard notebook-paper">
         
-        <table class="GamePlay">
+   
 
-        </table>
-
-        <button id="reset"></button>
+        
     </div>
-    <div class="round"></div>
+    <dialog>
+        <button class="close"autofocus>Close</button>
+        <p class="status"></p>
+      </dialog>
+  
+      
+    <button class="reset">Reset</button>
+    
 </body>
 <script src="assets/script.js"></script>
 </html>

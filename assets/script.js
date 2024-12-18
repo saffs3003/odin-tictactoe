@@ -1,106 +1,107 @@
-function GameBoard() {
-    // Check and create the game board dynamically if it doesn't exist
-    let board = document.querySelector(".GamePlay");
-    if (!board) {
-        const container = document.createElement("div");
-        container.className = "game-container";
+function GameBoard(){
 
-        board = document.createElement("table");
-        board.className = "GamePlay";
+    let board=document.querySelector(".GameBoard");
+    if(!board){
+        board=document.createElement("div");
+        board.classList.add("GameBoard");
+        document.body.appendChild(board);
 
-        const status = document.createElement("div");
-        status.className = "status";
-        status.textContent = "X's Turn";
-
-        const roundStatus = document.createElement("div");
-        roundStatus.className = "round";
-
-        container.appendChild(status);
-        container.appendChild(roundStatus);
-        container.appendChild(board);
-        document.body.appendChild(container);
     }
 
-    // Populate the board
-    let counter = 0;
-    for (let i = 0; i < 3; i++) {
-        const row = document.createElement("tr");
-        for (let j = 0; j < 3; j++) {
-            const col = document.createElement("td");
-            col.setAttribute("index", counter);
-            col.innerHTML = `<p>${counter}</p>`;
-            row.appendChild(col);
+    const gameTable=document.createElement("table");
+    board.appendChild(gameTable);
+
+    const size=3;
+    let counter=0;
+
+  for (let i = 0; i < size; i++) {
+    const row=document.createElement("tr");
+    row.setAttribute("RowIndex",i);
+    gameTable.appendChild(row);
+        for(let j=0;j<size;j++){
+            const col=document.createElement("td")
+            col.setAttribute("CellIndex",counter);
+            row.appendChild(col)
             counter++;
+
         }
-        board.appendChild(row);
-    }
+    
+  }
+
 }
 
-function Player(name, symbol) {
-    return { name, symbol };
+function Player(name,symbol){
+
+    return {name,symbol}
 }
 
-function Game() {
-    // Game state variables
-    let Options = ["", "", "", "", "", "", "", "", ""];
-    const Player1 = Player("Player 1", "X");
-    const Player2 = Player("Player 2", "O");
+function Game(){
+let running=true
+  
+    let options=["","","","","","","","",""]
+const Player1=new Player("saffi","X")
+const Player2=new Player("a","O")
 
-    let currentPlayer = Player1.symbol;
-    let gameRunning = true;
 
-    // Attach click listeners to cells
-    const Cells = document.querySelectorAll("td");
-    Cells.forEach((cell) =>
-        cell.addEventListener("click", function () {
-            const currentCellIndex = this.getAttribute("index");
 
-            // Prevent moves on already-filled cells or if game is over
-            if (!gameRunning || Options[currentCellIndex] !== "") {
-                return;
-            }
+const Cells=document.querySelectorAll("td");
+let currentPlayer=Player1
+Cells.forEach((cell)=>{
+    cell.addEventListener("click",function(){
+        const index=cell.getAttribute("cellindex")
+        if(!running||options[index]!==""){
+            return
+        }
+        updateCell(this,index,currentPlayer,options);
+        checkWinner(options,running,currentPlayer)
+        
+    })
+})
 
-            updateCell(this, currentCellIndex, Options, currentPlayer);
-            checkWinner(Options, currentPlayer);
-        })
-    );
 
-    function updateCell(cell, index, Options, currentPlayer) {
-        Options[index] = currentPlayer;
-        cell.textContent = currentPlayer;
-    }
 
-    function changePlayer() {
-        const playersTurn = document.querySelector(".status");
-        currentPlayer = currentPlayer === Player1.symbol ? Player2.symbol : Player1.symbol;
-        playersTurn.textContent = `${currentPlayer}'s Turn`;
-    }
+function updateCell(cell,index,currentPlayer,options){
+    const Cells=document.querySelectorAll("td");
+    options[index]=currentPlayer.symbol;
+    console.log(index)
+    cell.textContent=  `${currentPlayer.symbol}`;
+   
 
-    function checkWinner(Options, currentPlayer) {
-        let roundWon = false;
-        const status = document.querySelector(".round");
-        const winningConditions = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6],
-        ];
 
-        // Check all winning conditions
-        for (let i = 0; i < winningConditions.length; i++) {
-            const [indexA, indexB, indexC] = winningConditions[i];
-            const cellA = Options[indexA];
-            const cellB = Options[indexB];
-            const cellC = Options[indexC];
+}
+
+function changePlayer(){
+     currentPlayer=currentPlayer===Player1?Player2:Player1;
+    const turn=document.querySelector(".turn");
+    turn.textContent=`${currentPlayer.name}'s Turn `;
+   
+}
+
+function checkWinner(options, running, currentPlayer) {
+    let roundWon = false;
+    const status = document.querySelector(".status");
+    const WiningPattern = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+
+    if (running) {
+        // Check for winning patterns
+        for (let i = 0; i < WiningPattern.length; i++) {
+            const [index1, index2, index3] = WiningPattern[i];
+            const cellA = options[index1];
+            const cellB = options[index2];
+            const cellC = options[index3];
 
             if (cellA === "" || cellB === "" || cellC === "") {
-                continue;
+                continue; // Skip if any cell in the pattern is empty
             }
-
             if (cellA === cellB && cellB === cellC) {
                 roundWon = true;
                 break;
@@ -108,17 +109,49 @@ function Game() {
         }
 
         if (roundWon) {
-            status.textContent = `${currentPlayer} wins!`;
-            gameRunning = false;
-        } else if (!Options.includes("")) {
+            dialog.showModal()
+            status.textContent = `${currentPlayer.name} is the Winner!`;
+            running = false;
+            
+        } else if (!options.includes("")) {
             status.textContent = "It's a Draw!";
-            gameRunning = false;
+            running = false;
         } else {
+            console.log(options)
             changePlayer();
         }
     }
+    return running; // Return the updated running state
 }
 
-// Initialize the game
+const ResetButton=document.querySelector(".reset");
+ResetButton.addEventListener("click",()=>ResetGame());
+
+function ResetGame(){
+const Cells=document.querySelectorAll("td");
+    
+        options=["","","","","","","","",""];
+
+        Cells.forEach((cell)=>{
+            cell.textContent=""
+        })
+    
+}
+
+
+const dialog = document.querySelector("dialog");
+const closeButton = document.querySelector(".close");
+
+
+
+// "Close" button closes the dialog
+closeButton.addEventListener("click", () => {
+  dialog.close();
+  ResetGame();
+});
+
+
+}
+
 GameBoard();
 Game();
