@@ -213,7 +213,7 @@ height:60%;
         animation: bounce 0.5s ease-in-out;
       }
 #start{
-  height:50vh; width:50vw;align-items: center;justify-content: center;margin: auto; padding:20px;
+  height:50vh; width:60vw;align-items: center;justify-content: center;margin: auto; padding:20px;
 }
 
 
