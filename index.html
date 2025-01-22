@@ -8,23 +8,39 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playwrite+GB+J+Guides:ital@0;1&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="r tangerine-bold">
-    <nav></nav>
+<body class=" tangerine-bold">
+    <nav>
+        <button class="reset">Reset</button>
+       
+    </nav>
+    <h2 style="position: absolute; transform: rotate(-20deg); left:8vw;">Tic Tac Toe</h2>
     <div class="turn tangerine-regular"></div>
+    <dialog id="start" >
+      
+        <label  for="player1">Player 1: <img src="assets/img/crosses.png" style="width: 40px;"></label><input style="height: 5vh;border:1px solid black;border-radius: 10vw; width:30vw;padding: 10px;" id="player1" name="player1" required>
+        <label  for="player2">Player 2: <img src="assets/img/circles.png" style="width: 40px;"></label><input style="height: 5vh;border:1px solid black;border-radius: 10vw; width:30vw;padding: 10px;" type="text" id="player2" name="player2" required>
+<button id="startbutton" style="width: 30vw; border:1px solid black;border-radius: 10vw;height: 5vh;"> Start</button>
+      </dialog>
+    <main class=" notebook-paper">
 
-    <div class="GameBoard notebook-paper">
+
+        
+  
+  
+    <div class="GameBoard cover ">
         
    
-
-        
     </div>
-    <dialog>
-        <button class="close"autofocus>Close</button>
+  
+    <dialog id="result">
+        <button class="close">X</button>
         <p class="status"></p>
       </dialog>
-  
-      
-    <button class="reset">Reset</button>
+  <div>
+    
+  </div>
+    </main> 
+    
     
 </body>
 <script src="assets/script.js"></script>

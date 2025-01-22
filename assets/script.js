@@ -7,7 +7,6 @@ function GameBoard(){
         document.body.appendChild(board);
 
     }
-
     const gameTable=document.createElement("table");
     board.appendChild(gameTable);
 
@@ -28,6 +27,8 @@ function GameBoard(){
     
   }
 
+
+
 }
 
 function Player(name,symbol){
@@ -35,49 +36,89 @@ function Player(name,symbol){
     return {name,symbol}
 }
 
-function Game(){
+function GameStart(){
+    const Startdialog=document.querySelector("#start")
+    Startdialog.showModal();
+   
+  const startGame=document.querySelector("#startbutton");
+  startGame.addEventListener("click",()=>{
+    const player1name=document.getElementById("player1").value;
+    const player2name=document.getElementById("player2").value;
+    console.log(player1name)
+if(!validate(player1name,player2name)){
+    return
+}
+
+
+
+    const Player1=new Player(player1name,"assets/img/crosses.png")
+    const Player2=new Player(player2name,"assets/img/circles.png")
+Startdialog.close();
+    Game(Player1,Player2)
+  })
+    
+}
+
+function Game(Player1,Player2){
 let running=true
   
     let options=["","","","","","","","",""]
-const Player1=new Player("saffi","X")
-const Player2=new Player("a","O")
+
 
 
 
 const Cells=document.querySelectorAll("td");
 let currentPlayer=Player1
-Cells.forEach((cell)=>{
-    cell.addEventListener("click",function(){
-        const index=cell.getAttribute("cellindex")
-        if(!running||options[index]!==""){
-            return
+Cells.forEach((cell) => {
+    cell.addEventListener("click", function () {
+        const index = cell.getAttribute("cellindex");
+        if (!running || options[index] !== "") {
+            return;
         }
-        updateCell(this,index,currentPlayer,options);
-        checkWinner(options,running,currentPlayer)
-        
-    })
-})
+        updateCell(this, index, currentPlayer, options);
+        checkWinner(options);
+    });
+});
+
 
 
 
 function updateCell(cell,index,currentPlayer,options){
+    const img = document.createElement('img');
+    img.src = currentPlayer.symbol;
+    
     const Cells=document.querySelectorAll("td");
     options[index]=currentPlayer.symbol;
     console.log(index)
-    cell.textContent=  `${currentPlayer.symbol}`;
+    cell.appendChild(img)
    
 
 
 }
 
 function changePlayer(){
+    
+
      currentPlayer=currentPlayer===Player1?Player2:Player1;
     const turn=document.querySelector(".turn");
     turn.textContent=`${currentPlayer.name}'s Turn `;
+  
    
 }
-
-function checkWinner(options, running, currentPlayer) {
+function ResetGame(){
+    const Cells=document.querySelectorAll("td");
+    const turn = document.querySelector(".turn");
+        
+            options=["","","","","","","","",""];
+    
+            Cells.forEach((cell)=>{
+                cell.textContent=""
+            })
+            turn.textContent="  "
+        Game();
+    }
+    
+function checkWinner(options) {
     let roundWon = false;
     const status = document.querySelector(".status");
     const WiningPattern = [
@@ -91,55 +132,42 @@ function checkWinner(options, running, currentPlayer) {
         [2, 4, 6]
     ];
 
-    if (running) {
-        // Check for winning patterns
-        for (let i = 0; i < WiningPattern.length; i++) {
-            const [index1, index2, index3] = WiningPattern[i];
-            const cellA = options[index1];
-            const cellB = options[index2];
-            const cellC = options[index3];
+    for (let i = 0; i < WiningPattern.length; i++) {
+        const [index1, index2, index3] = WiningPattern[i];
+        const cellA = options[index1];
+        const cellB = options[index2];
+        const cellC = options[index3];
 
-            if (cellA === "" || cellB === "" || cellC === "") {
-                continue; // Skip if any cell in the pattern is empty
-            }
-            if (cellA === cellB && cellB === cellC) {
-                roundWon = true;
-                break;
-            }
+        if (cellA === "" || cellB === "" || cellC === "") {
+            continue; // Skip if any cell in the pattern is empty
         }
-
-        if (roundWon) {
-            dialog.showModal()
-            status.textContent = `${currentPlayer.name} is the Winner!`;
-            running = false;
-            
-        } else if (!options.includes("")) {
-            status.textContent = "It's a Draw!";
-            running = false;
-        } else {
-            console.log(options)
-            changePlayer();
+        if (cellA === cellB && cellB === cellC) {
+            roundWon = true;
+            break;
         }
     }
-    return running; // Return the updated running state
+
+    if (roundWon) {
+        dialog.showModal(); // Modal shows the game info
+        status.textContent = `${currentPlayer.name} is the Winner!`;
+        running = false; // Stop the game
+    } else if (!options.includes("")) {
+        dialog.showModal();
+        status.textContent = "It's a Draw!";
+        running = false; // Stop the game
+    } else {
+        changePlayer(); // Continue the game
+       
+    }
 }
+
 
 const ResetButton=document.querySelector(".reset");
 ResetButton.addEventListener("click",()=>ResetGame());
 
-function ResetGame(){
-const Cells=document.querySelectorAll("td");
-    
-        options=["","","","","","","","",""];
-
-        Cells.forEach((cell)=>{
-            cell.textContent=""
-        })
-    
-}
 
 
-const dialog = document.querySelector("dialog");
+const dialog = document.querySelector("#result");
 const closeButton = document.querySelector(".close");
 
 
@@ -148,10 +176,22 @@ const closeButton = document.querySelector(".close");
 closeButton.addEventListener("click", () => {
   dialog.close();
   ResetGame();
+  GameStart()
 });
 
 
 }
 
 GameBoard();
-Game();
+GameStart();
+function validate(player1,player2){
+if(!player1.trim() || !player2.trim()){
+    nullName=!player1?"player 1":"player 2"
+    console.log(nullName)
+    alert(`${nullName}'s  is empty`)
+    return false
+}
+else{
+    return true
+}
+}
